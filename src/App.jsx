@@ -6,29 +6,35 @@ const Register = () => {
   const [email, setEmail] = useState("")
   const [username, setUsername] = useState("")
   const [pwd, setPwd] = useState("")
+  const [confPwd, setConfPwd] = useState("")
+  const [pwdErr, setPwdErr] = useState("")
 
   const handleSubmit = e => {
     e.preventDefault()
-    axios.post("http://127.0.0.1:8000/api/cabins/",
+    if (pwd === confPwd) {
+      setPwdErr("")
+      axios.post("http://127.0.0.1:8000/auth/users/",
         JSON.stringify({ 
-          name: "cors"
-          // email: "manuel@amazon.com",
-          // username: "manuel",
-          // password: "13angulo" 
+          email,
+          username,
+          password: pwd
         }),
         {
-          headers: {'Content-Type': 'application/json'},
-          withCredentials: true
+          headers: {'Content-Type': 'application/json'}
         }
-    ).then(res => console.log(res.data))
+      ).then(res => console.log(res.data))
+    } else {
+      setPwdErr("Passwords do not match")
+    }
   }
 
   return (
     <div>
       <h1>Register</h1>
       <form onSubmit={handleSubmit}>
+        <h3>{pwdErr}</h3>
         <input 
-          type='text'
+          type='email'
           placeholder='Email'
           value={email}
           onChange={e => setEmail(e.target.value)}
@@ -40,10 +46,16 @@ const Register = () => {
           onChange={e => setUsername(e.target.value)}
         />
         <input 
-          type='text'
+          type='password'
           placeholder='Password'
           value={pwd}
           onChange={e => setPwd(e.target.value)}
+        />
+        <input 
+          type='password'
+          placeholder='Confirm password'
+          value={confPwd}
+          onChange={e => setConfPwd(e.target.value)}
         />
         <button type='submit'>Register</button>
       </form>
