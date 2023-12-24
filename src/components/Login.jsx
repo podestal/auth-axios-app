@@ -1,13 +1,17 @@
-import { useState, useContext } from "react"
-import AuthContext from "./context/AuthProvider"
-import axios from "./api/axios"
+import { useState } from "react"
+import axios from "../api/axios"
+import useAuth from "../hooks/useAuth"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 
 const LOGIN_URL = "/auth/jwt/create/"
 const USER_URL = "/auth/users/me"
 
 const Login = () => {
 
-    const { setAuth } = useContext(AuthContext)
+    const { setAuth } = useAuth()
+    const navidate = useNavigate()
+    const location = useLocation()
+    const from = location.state?.from?.pathname || "/"
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
@@ -27,10 +31,10 @@ const Login = () => {
 
             const id = userResponse.data.id
             const email = userResponse.data.email
-            await setAuth({ id, username, email, accessToken })
-            console.log({id, username, email, accessToken});
+            await setAuth({ id, username, email, accessToken, password })
             setUsername("")
             setPassword("")
+            navidate(from, { replace: true })
 
         } catch (err) {
             console.log(err)
