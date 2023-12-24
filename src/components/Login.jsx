@@ -25,13 +25,14 @@ const Login = () => {
                 headers: { "Content-Type": "application/json" }
             })
             const accessToken = jwtResponse.data.access
+            const refreshToken = jwtResponse.data.refresh
             const userResponse = await axios.get(USER_URL, {
                 headers: { Authorization: `JWT ${accessToken}`}
             })
 
             const id = userResponse.data.id
             const email = userResponse.data.email
-            await setAuth({ id, username, email, accessToken, password })
+            await setAuth({ id, username, email, accessToken, refreshToken, password })
             setUsername("")
             setPassword("")
             navidate(from, { replace: true })
